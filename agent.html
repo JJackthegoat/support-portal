@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Dashboard | Support Center</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6fa;
+  color: #1f2937;
+}
+
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: #111827;
+  color: white;
+  padding: 25px;
+}
+
+.sidebar h2 {
+  color: #60a5fa;
+  margin-bottom: 35px;
+}
+
+.sidebar a {
+  display: block;
+  color: #d1d5db;
+  text-decoration: none;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+  background: #1f2937;
+  color: white;
+}
+
+.main {
+  margin-left: 240px;
+  padding: 35px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.header p {
+  color: #6b7280;
+  margin-top: 8px;
+}
+
+.demo-label {
+  background: #fff7ed;
+  color: #9a3412;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stat {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.stat p {
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+
+.stat h2 {
+  font-size: 30px;
+}
+
+.panel {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.toolbar {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.toolbar input,
+.toolbar select {
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.toolbar input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.ticket {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+.ticket-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ticket h3 {
+  margin-bottom: 10px;
+}
+
+.ticket p {
+  color: #6b7280;
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.open {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.resolved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.priority {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.ticket-controls {
+  margin-top: 15px;
+}
+
+.ticket-controls select {
+  padding: 9px;
+  border-radius: 7px;
+  border: 1px solid #d1d5db;
+}
+
+.empty {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+}
+
+@media (max-width: 800px) {
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+  }
+
+  .sidebar a {
+    display: inline-block;
+  }
+
+  .main {
+    margin-left: 0;
+    padding: 20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+  <h2>Support Center</h2>
+  <a class="active" href="agent.html">Dashboard</a>
+  <a href="index.html">Help Center</a>
+  <a href="submit.html">Submit Ticket</a>
+</div>
+
+<div class="main">
+
+  <div class="header">
+    <div>
+      <h1>Agent Dashboard</h1>
+      <p>Manage and review support tickets.</p>
+    </div>
+
+    <div class="demo-label">
+      Demo Dashboard
+    </div>
+  </div>
+
+  <div class="stats">
+
+    <div class="stat">
+      <p>Total Tickets</p>
+      <h2 id="total">0</h2>
+    </div>
+
+    <div class="stat">
+      <p>Open</p>
+      <h2 id="openCount">0</h2>
+    </div>
+
+    <div class="stat">
+      <p>Pending</p>
+      <h2 id="pendingCount">0</h2>
+    </div>
+
+    <div class="stat">
+      <p>Resolved</p>
+      <h2 id="resolvedCount">0</h2>
+    </div>
+
+  </div>
+
+  <div class="panel">
+
+    <h2>Tickets</h2>
+
+    <div class="toolbar">
+      <input
+        type="text"
+        id="search"
+        placeholder="Search tickets..."
+        oninput="renderTickets()"
+      >
+
+      <select id="filter" onchange="renderTickets()">
+        <option value="all">All statuses</option>
+        <option value="Open">Open</option>
+        <option value="Pending">Pending</option>
+        <option value="Resolved">Resolved</option>
+      </select>
+    </div>
+
+    <div id="ticketList"></div>
+
+  </div>
+
+</div>
+
+<script>
+
+let tickets = [
+  {
+    id: "NG-10421",
+    subject: "Unable to access my account",
+    name: "Alex Johnson",
+    category: "Account",
+    priority: "High",
+    status: "Open",
+    description: "I am having trouble signing into my account."
+  },
+  {
+    id: "NG-10422",
+    subject: "Billing question",
+    name: "Taylor Smith",
+    category: "Billing",
+    priority: "Normal",
+    status: "Pending",
+    description: "I have a question about a recent billing charge."
+  },
+  {
+    id: "NG-10423",
+    subject: "Website error",
+    name: "Morgan Lee",
+    category: "Technical",
+    priority: "High",
+    status: "Open",
+    description: "The website keeps displaying an error."
+  },
+  {
+    id: "NG-10424",
+    subject: "Request for information",
+    name: "Jamie Brown",
+    category: "General",
+    priority: "Normal",
+    status: "Resolved",
+    description: "I wanted to ask about your services."
+  },
+  {
+    id: "NG-10425",
+    subject: "Password reset help",
+    name: "Chris Wilson",
+    category: "Account",
+    priority: "Normal",
+    status: "Open",
+    description: "I need help resetting my password."
+  }
+];
+
+function updateStats() {
+  document.getElementById("total").textContent = tickets.length;
+
+  document.getElementById("openCount").textContent =
+    tickets.filter(t => t.status === "Open").length;
+
+  document.getElementById("pendingCount").textContent =
+    tickets.filter(t => t.status === "Pending").length;
+
+  document.getElementById("resolvedCount").textContent =
+    tickets.filter(t => t.status === "Resolved").length;
+}
+
+function renderTickets() {
+  const search = document.getElementById("search").value.toLowerCase();
+  const filter = document.getElementById("filter").value;
+
+  const list = document.getElementById("ticketList");
+
+  const filtered = tickets.filter(ticket => {
+    const matchesSearch =
+      ticket.subject.toLowerCase().includes(search) ||
+      ticket.name.toLowerCase().includes(search) ||
+      ticket.id.toLowerCase().includes(search) ||
+      ticket.category.toLowerCase().includes(search);
+
+    const matchesFilter =
+      filter === "all" || ticket.status === filter;
+
+    return matchesSearch && matchesFilter;
+  });
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty">No tickets found.</div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(ticket => `
+    <div class="ticket">
+
+      <div class="ticket-top">
+        <div>
+          <h3>${escapeHTML(ticket.subject)}</h3>
+          <p>${escapeHTML(ticket.id)} • ${escapeHTML(ticket.name)}</p>
+        </div>
+
+        <div>
+          <span class="badge ${ticket.status.toLowerCase()}">
+            ${escapeHTML(ticket.status)}
+          </span>
+        </div>
+      </div>
+
+      <p><strong>Category:</strong> ${escapeHTML(ticket.category)}</p>
+
+      <p>
+        <strong>Priority:</strong>
+        <span class="badge ${ticket.priority === "High" ? "priority" : ""}">
+          ${escapeHTML(ticket.priority)}
+        </span>
+      </p>
+
+      <p>${escapeHTML(ticket.description)}</p>
+
+      <div class="ticket-controls">
+        <label for="status-${ticket.id}">Update status: </label>
+
+        <select id="status-${ticket.id}"
+          onchange="changeStatus('${ticket.id}', this.value)">
+
+          <option value="Open" ${ticket.status === "Open" ? "selected" : ""}>
+            Open
+          </option>
+
+          <option value="Pending" ${ticket.status === "Pending" ? "selected" : ""}>
+            Pending
+          </option>
+
+          <option value="Resolved" ${ticket.status === "Resolved" ? "selected" : ""}>
+            Resolved
+          </option>
+
+        </select>
+      </div>
+
+    </div>
+  `).join("");
+}
+
+function changeStatus(id, newStatus) {
+  const ticket = tickets.find(t => t.id === id);
+
+  if (ticket) {
+    ticket.status = newStatus;
+    updateStats();
+    renderTickets();
+  }
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[char]));
+}
+
+updateStats();
+renderTickets();
+
+</script>
+
+</body>
+</html>

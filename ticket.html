@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ticket Details | Support Center</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6fa;
+  color: #1f2937;
+}
+
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  background: #111827;
+  color: white;
+  position: fixed;
+  padding: 25px;
+  top: 0;
+  left: 0;
+}
+
+.sidebar h2 {
+  color: #60a5fa;
+  margin-bottom: 35px;
+}
+
+.sidebar a {
+  display: block;
+  text-decoration: none;
+  color: #d1d5db;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+.sidebar a:hover {
+  background: #1f2937;
+  color: white;
+}
+
+.main {
+  margin-left: 240px;
+  padding: 35px;
+}
+
+.header {
+  margin-bottom: 25px;
+}
+
+.header p {
+  color: #6b7280;
+  margin-top: 10px;
+}
+
+.demo {
+  background: #fff7ed;
+  color: #9a3412;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.panel {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 20px;
+}
+
+.panel h2 {
+  margin-bottom: 20px;
+}
+
+.ticket-title {
+  margin-bottom: 15px;
+}
+
+.ticket-title h2 {
+  margin-bottom: 10px;
+}
+
+.muted {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.message {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+  line-height: 1.6;
+}
+
+.message-header {
+  margin-bottom: 12px;
+}
+
+.message-header strong {
+  display: block;
+}
+
+.message-header span {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.reply-box textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  resize: vertical;
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+}
+
+button {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+
+.note-button {
+  background: #d97706;
+}
+
+.note-button:hover {
+  background: #b45309;
+}
+
+.controls label {
+  display: block;
+  margin: 15px 0 8px;
+  font-weight: bold;
+}
+
+.controls select,
+.controls input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+}
+
+.note {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  line-height: 1.5;
+}
+
+#conversation {
+  margin-bottom: 25px;
+}
+
+@media (max-width: 950px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 800px) {
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+  }
+
+  .sidebar a {
+    display: inline-block;
+  }
+
+  .main {
+    margin-left: 0;
+    padding: 20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+  <h2>Support Center</h2>
+  <a href="agent.html">Dashboard</a>
+  <a href="index.html">Help Center</a>
+  <a href="submit.html">Submit Ticket</a>
+</div>
+
+<div class="main">
+
+  <div class="header">
+    <h1>Ticket Details</h1>
+    <p>Review and manage support requests.</p>
+  </div>
+
+  <div class="demo">
+    Demo ticket environment. Messages and updates are not saved to a server.
+  </div>
+
+  <div class="layout">
+
+    <div>
+
+      <div class="panel">
+
+        <div class="ticket-title">
+          <h2>Unable to access my account</h2>
+          <p class="muted">Ticket #NG-10421</p>
+        </div>
+
+        <div id="conversation">
+
+          <div class="message">
+            <div class="message-header">
+              <strong>Alex Johnson</strong>
+              <span>Customer • Original request</span>
+            </div>
+
+            <p>
+              I am having trouble signing into my account.
+              Whenever I try, I receive an error message.
+              Could somebody please help me?
+            </p>
+          </div>
+
+        </div>
+
+        <div class="reply-box">
+          <h3>Reply to Customer</h3>
+
+          <textarea id="reply" placeholder="Write your response here..."></textarea>
+
+          <button onclick="sendReply()">Send Reply</button>
+        </div>
+
+      </div>
+
+      <div class="panel">
+
+        <h2>Internal Notes</h2>
+
+        <div id="notes"></div>
+
+        <textarea
+          id="internalNote"
+          placeholder="Write an internal note..."
+          style="width:100%;min-height:100px;padding:15px;border:1px solid #d1d5db;border-radius:8px;resize:vertical;"
+        ></textarea>
+
+        <button class="note-button" onclick="addNote()">Add Internal Note</button>
+
+      </div>
+
+    </div>
+
+    <div>
+
+      <div class="panel controls">
+
+        <h2>Ticket Information</h2>
+
+        <label>Status</label>
+        <select id="status">
+          <option>Open</option>
+          <option>Pending</option>
+          <option>Resolved</option>
+        </select>
+
+        <label>Priority</label>
+        <select id="priority">
+          <option>Low</option>
+          <option selected>Normal</option>
+          <option>High</option>
+          <option>Urgent</option>
+        </select>
+
+        <label>Category</label>
+        <select id="category">
+          <option>Account</option>
+          <option>Billing</option>
+          <option>Technical</option>
+          <option>General</option>
+        </select>
+
+        <label>Assigned Agent</label>
+        <input type="text" id="agent" value="Unassigned">
+
+        <button onclick="saveDemo()">Update Ticket</button>
+
+      </div>
+
+      <div class="panel">
+
+        <h2>Customer</h2>
+
+        <p><strong>Name:</strong> Alex Johnson</p>
+        <p style="margin-top:12px;"><strong>Email:</strong> alex@example.com</p>
+        <p style="margin-top:12px;"><strong>Ticket:</strong> NG-10421</p>
+        <p style="margin-top:12px;"><strong>Created:</strong> Demo</p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+function sendReply() {
+  const text = document.getElementById("reply").value.trim();
+
+  if (!text) {
+    alert("Please write a reply first.");
+    return;
+  }
+
+  const conversation = document.getElementById("conversation");
+
+  const message = document.createElement("div");
+  message.className = "message";
+
+  const header = document.createElement("div");
+  header.className = "message-header";
+
+  const strong = document.createElement("strong");
+  strong.textContent = "Support Agent";
+
+  const span = document.createElement("span");
+  span.textContent = "Demo reply";
+
+  header.appendChild(strong);
+  header.appendChild(span);
+
+  const paragraph = document.createElement("p");
+  paragraph.textContent = text;
+
+  message.appendChild(header);
+  message.appendChild(paragraph);
+
+  conversation.appendChild(message);
+
+  document.getElementById("reply").value = "";
+}
+
+function addNote() {
+  const text = document.getElementById("internalNote").value.trim();
+
+  if (!text) {
+    alert("Please write a note first.");
+    return;
+  }
+
+  const notes = document.getElementById("notes");
+
+  const note = document.createElement("div");
+  note.className = "note";
+
+  const strong = document.createElement("strong");
+  strong.textContent = "Internal Note";
+
+  const paragraph = document.createElement("p");
+  paragraph.textContent = text;
+  paragraph.style.marginTop = "8px";
+
+  note.appendChild(strong);
+  note.appendChild(paragraph);
+
+  notes.appendChild(note);
+
+  document.getElementById("internalNote").value = "";
+}
+
+function saveDemo() {
+  alert("Demo: Ticket settings updated for this page.");
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submit a Ticket</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f7fb;
+  margin: 0;
+  color: #172033;
+}
+header {
+  padding: 20px 8%;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+header a { color: #172033; text-decoration: none; }
+main {
+  max-width: 650px;
+  margin: 40px auto;
+  padding: 30px;
+  background: white;
+  border-radius: 15px;
+  border: 1px solid #e5e7eb;
+}
+h1 { margin-bottom: 10px; }
+p { color: #64748b; }
+label {
+  display: block;
+  margin-top: 20px;
+  font-weight: bold;
+}
+input, select, textarea {
+  width: 100%;
+  padding: 13px;
+  margin-top: 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+textarea { min-height: 140px; resize: vertical; }
+button {
+  margin-top: 25px;
+  width: 100%;
+  padding: 15px;
+  background: #111827;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<header>
+<a href="index.html">← Back to Support Center</a>
+</header>
+
+<main>
+<h1>Submit a Support Ticket</h1>
+<p>Fill out the form below and our support team can review your request.</p>
+
+<form id="ticketForm">
+<label>Name</label>
+<input type="text" id="name" required>
+
+<label>Email</label>
+<input type="email" id="email" required>
+
+<label>Subject</label>
+<input type="text" id="subject" required>
+
+<label>Category</label>
+<select id="category" required>
+<option value="">Select a category</option>
+<option>Technical Support</option>
+<option>Account Help</option>
+<option>Billing</option>
+<option>General Question</option>
+<option>Other</option>
+</select>
+
+<label>Priority</label>
+<select id="priority" required>
+<option>Low</option>
+<option>Normal</option>
+<option>High</option>
+</select>
+
+<label>Description</label>
+<textarea id="description" placeholder="Describe your issue..." required></textarea>
+
+<button type="submit">Submit Ticket</button>
+</form>
+
+<div id="result"></div>
+</main>
+
+<script>
+document.getElementById("ticketForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const ticketNumber = "NG-" + Math.floor(100000 + Math.random() * 900000);
+
+  document.getElementById("result").innerHTML =
+    "<h2>Ticket Created!</h2><p>Your ticket number is: <strong>" +
+    ticketNumber + "</strong></p><p>This demo does not actually send or save tickets yet.</p>";
+
+  document.getElementById("ticketForm").reset();
+});
+</script>
+
+</body>
+</html>

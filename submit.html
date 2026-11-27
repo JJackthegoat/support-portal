@@ -151,10 +151,10 @@
         throw new Error(data.message || data.details || "Submission failed.");
       }
 
-      showResult(
-        "Your ticket has been submitted successfully! Ticket ID: " + data,
-        true
-      );
+ showResult(
+  "Your ticket has been submitted successfully! Ticket ID: " + data.ticket_id,
+  true
+);
 
       form.reset();
 

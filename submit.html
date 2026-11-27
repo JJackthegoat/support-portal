@@ -126,7 +126,7 @@
 
     try {
       const response = await fetch(
-        SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/rpc/submit_support_ticket",
+        SUPABASE_URL.replace(/\/$/, "") + "/functions/v1/submit-ticket",
         {
           method: "POST",
           headers: {

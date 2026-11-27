@@ -1,118 +1,179 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Submit a Ticket</title>
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #f5f7fb;
-  margin: 0;
-  color: #172033;
-}
-header {
-  padding: 20px 8%;
-  background: white;
-  border-bottom: 1px solid #e5e7eb;
-}
-header a { color: #172033; text-decoration: none; }
-main {
-  max-width: 650px;
-  margin: 40px auto;
-  padding: 30px;
-  background: white;
-  border-radius: 15px;
-  border: 1px solid #e5e7eb;
-}
-h1 { margin-bottom: 10px; }
-p { color: #64748b; }
-label {
-  display: block;
-  margin-top: 20px;
-  font-weight: bold;
-}
-input, select, textarea {
-  width: 100%;
-  padding: 13px;
-  margin-top: 8px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  font-size: 15px;
-  box-sizing: border-box;
-}
-textarea { min-height: 140px; resize: vertical; }
-button {
-  margin-top: 25px;
-  width: 100%;
-  padding: 15px;
-  background: #111827;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit a Support Ticket</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 30px 15px;
+      color: #222;
+    }
+    .container {
+      max-width: 650px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.08);
+    }
+    h1 { margin-top: 0; }
+    label {
+      display: block;
+      margin-top: 18px;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      margin-top: 7px;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 7px;
+      font-size: 15px;
+    }
+    textarea { min-height: 140px; resize: vertical; }
+    button {
+      margin-top: 22px;
+      padding: 14px;
+      width: 100%;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 7px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:disabled { opacity: .6; cursor: wait; }
+    #result {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-wrap: anywhere;
+    }
+    .success { background: #e8f7ed; color: #166534; }
+    .error { background: #feecec; color: #991b1b; }
+  </style>
 </head>
 <body>
 
-<header>
-<a href="index.html">← Back to Support Center</a>
-</header>
+<div class="container">
+  <h1>Submit a Support Ticket</h1>
+  <p>Fill out the form below and our support team will review your request.</p>
 
-<main>
-<h1>Submit a Support Ticket</h1>
-<p>Fill out the form below and our support team can review your request.</p>
+  <form id="ticketForm">
+    <label for="name">Full Name</label>
+    <input id="name" required maxlength="100">
 
-<form id="ticketForm">
-<label>Name</label>
-<input type="text" id="name" required>
+    <label for="email">Email Address</label>
+    <input id="email" type="email" required maxlength="254">
 
-<label>Email</label>
-<input type="email" id="email" required>
+    <label for="subject">Subject</label>
+    <input id="subject" required minlength="3" maxlength="200">
 
-<label>Subject</label>
-<input type="text" id="subject" required>
+    <label for="category">Category</label>
+    <select id="category" required>
+      <option value="">Select a category</option>
+      <option>Account</option>
+      <option>Billing</option>
+      <option>Technical Support</option>
+      <option>Bug Report</option>
+      <option>Other</option>
+    </select>
 
-<label>Category</label>
-<select id="category" required>
-<option value="">Select a category</option>
-<option>Technical Support</option>
-<option>Account Help</option>
-<option>Billing</option>
-<option>General Question</option>
-<option>Other</option>
-</select>
+    <label for="priority">Priority</label>
+    <select id="priority">
+      <option>Normal</option>
+      <option>Low</option>
+      <option>High</option>
+    </select>
 
-<label>Priority</label>
-<select id="priority" required>
-<option>Low</option>
-<option>Normal</option>
-<option>High</option>
-</select>
+    <label for="description">Description</label>
+    <textarea id="description" required minlength="10" maxlength="5000"
+      placeholder="Describe your issue..."></textarea>
 
-<label>Description</label>
-<textarea id="description" placeholder="Describe your issue..." required></textarea>
+    <button id="submitBtn" type="submit">Submit Ticket</button>
+  </form>
 
-<button type="submit">Submit Ticket</button>
-</form>
-
-<div id="result"></div>
-</main>
+  <div id="result"></div>
+</div>
 
 <script>
-document.getElementById("ticketForm").addEventListener("submit", function(e) {
-  e.preventDefault();
+  // Replace these two values with your Supabase project values.
+  const SUPABASE_URL = "sb_publishable_si1STA38mmoMpzHSPhtFcg_z_6529TL";
+  const SUPABASE_KEY = "https://lmimebjdafqllzoudzbq.supabase.co/rest/v1/";
 
-  const ticketNumber = "NG-" + Math.floor(100000 + Math.random() * 900000);
+  const form = document.getElementById("ticketForm");
+  const submitBtn = document.getElementById("submitBtn");
+  const result = document.getElementById("result");
 
-  document.getElementById("result").innerHTML =
-    "<h2>Ticket Created!</h2><p>Your ticket number is: <strong>" +
-    ticketNumber + "</strong></p><p>This demo does not actually send or save tickets yet.</p>";
+  form.addEventListener("submit", async function(event) {
+    event.preventDefault();
 
-  document.getElementById("ticketForm").reset();
-});
+    if (SUPABASE_URL.includes("YOUR_") || SUPABASE_KEY.includes("YOUR_")) {
+      showResult("Please configure the Supabase project settings first.", false);
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting...";
+    result.style.display = "none";
+
+    try {
+      const response = await fetch(
+        SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/rpc/submit_support_ticket",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": SUPABASE_KEY,
+            "Authorization": "Bearer " + SUPABASE_KEY
+          },
+          body: JSON.stringify({
+            p_subject: document.getElementById("subject").value,
+            p_customer_name: document.getElementById("name").value,
+            p_customer_email: document.getElementById("email").value,
+            p_category: document.getElementById("category").value,
+            p_priority: document.getElementById("priority").value,
+            p_description: document.getElementById("description").value
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || data.details || "Submission failed.");
+      }
+
+      showResult(
+        "Your ticket has been submitted successfully! Ticket ID: " + data,
+        true
+      );
+
+      form.reset();
+
+    } catch (error) {
+      showResult(
+        "We couldn't submit your ticket. " + error.message,
+        false
+      );
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Submit Ticket";
+    }
+  });
+
+  function showResult(message, success) {
+    result.textContent = message;
+    result.className = success ? "success" : "error";
+    result.style.display = "block";
+  }
 </script>
 
 </body>
